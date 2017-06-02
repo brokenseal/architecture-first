@@ -1,0 +1,44 @@
+{
+  "name": "architecture-first",
+  "version": "0.0.1",
+  "description": "A first attempt to find the best architecture layout for a frontend application",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/gulp start",
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brokenseal/architecture-first.git"
+  },
+  "author": "Davide Callegari <davide@brokenseal.it>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brokenseal/architecture-first/issues"
+  },
+  "homepage": "https://github.com/brokenseal/architecture-first#readme",
+  "dependencies": {
+    "ava": "^0.19.1",
+    "gulp": "^3.9.1",
+    "preact": "^8.1.0",
+    "redux": "^3.6.0"
+  },
+  "devDependencies": {
+    "ava": "^0.19.1"
+  },
+  "ava": {
+    "files": [
+      "test/**/*.{js,jsx}"
+    ],
+    "source": [
+      "src/**/*.{js,jsx}"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  },
+  "babel": {
+    "presets": ["@ava/stage-4"]
+  }
+}
