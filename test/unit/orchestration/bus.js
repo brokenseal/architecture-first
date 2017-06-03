@@ -4,16 +4,18 @@ import {getBus} from '../../../src/orchestration/bus'
 
 test('getBus without any configuration returns a new bus instance', t => {
     const bus = getBus();
-    const expectedProperties = ['sendMessage', 'addListener'];
+    const expectedOwnProperties = ['sendMessage', 'addListener', 'getListeners', 'getAcceptedMessages'];
+    t.plan(expectedOwnProperties.length);
 
-    expectedProperties.forEach((prop)=> {
-        t.true(prop in bus);
+    Object.keys(bus).forEach((prop)=> {
+        t.true(bus.hasOwnProperty(prop));
     });
 });
 
 test('bus.addListener accepts a function as first parameter and adds it to the list of internal listeners', t => {
     const bus = getBus();
-    const listener = ()=> {};
+    const listener = ()=> {
+    };
 
     bus.addListener(listener);
     t.true(bus.getListeners().indexOf(listener) >= 0);
@@ -25,7 +27,8 @@ test('getBus should always return a new instance and never a globally stored ins
 
 test('bus.addListener returns an unsubscription token which will allow listeners to be removed', t => {
     const bus = getBus();
-    const listener = ()=> {};
+    const listener = ()=> {
+    };
 
     const token = bus.addListener(listener);
     t.true(bus.getListeners().indexOf(listener) >= 0);
@@ -36,9 +39,12 @@ test('bus.addListener returns an unsubscription token which will allow listeners
 test('bus.addListener returns an unsubscription token which will allow listeners to be removed: second scenario ' +
     'with multiple listeners', t => {
     const bus = getBus();
-    const listener1 = ()=> {};
-    const listener2 = ()=> {};
-    const listener3 = ()=> {};
+    const listener1 = ()=> {
+    };
+    const listener2 = ()=> {
+    };
+    const listener3 = ()=> {
+    };
 
     const token1 = bus.addListener(listener1);
     const token2 = bus.addListener(listener2);
@@ -70,7 +76,8 @@ test('bus.addListener returns an unsubscription token which will allow listeners
     'showing that invoking unsubscription multiple times will not cause an error but that it will be ' +
     'silently ignored', t => {
     const bus = getBus();
-    const listener = ()=> {};
+    const listener = ()=> {
+    };
 
     const token = bus.addListener(listener);
     token.unsubscribe();
@@ -81,16 +88,17 @@ test('bus.addListener returns an unsubscription token which will allow listeners
 
 test('bus.addListener should not allow the same listener to be added multiple times, it should throw an error', t => {
     const bus = getBus();
-    const listener = ()=> {};
+    const listener = ()=> {
+    };
 
     bus.addListener(listener);
 
-    t.throws(()=>{
+    t.throws(()=> {
         bus.addListener(listener);
     }, Error);
 });
 
-test('bus.sendMessage will propagate the message to all listeners', (t)=>{
+test('bus.sendMessage will propagate the message to all listeners', (t)=> {
     t.plan(3);
 
     const bus = getBus();
@@ -113,7 +121,7 @@ test('bus.sendMessage will propagate the message to all listeners', (t)=>{
 });
 
 test('bus.sendMessage will propagate the message to all listeners and additionally pass the payload (second ' +
-    'argument)', (t)=>{
+    'argument)', (t)=> {
     t.plan(1);
 
     const bus = getBus();
@@ -128,32 +136,81 @@ test('bus.sendMessage will propagate the message to all listeners and additional
 });
 
 test('bus.getListeners should return a copy of the listeners array every time it is invoked, so as to avoid messing' +
-    'around with the internal state of the bus', (t)=>{
+    'around with the internal state of the bus', (t)=> {
     const bus = getBus();
 
-    bus.addListener(()=>{});
+    bus.addListener(()=> {
+    });
 
     t.not(bus.getListeners(), bus.getListeners());
 });
 
-test('by design, if a listener throws an error, the whole process fails', (t)=>{
+test('by design, if a listener throws an error, the whole process fails', (t)=> {
     t.plan(2);
 
     const bus = getBus();
 
-    bus.addListener(()=>{
+    bus.addListener(()=> {
         t.pass();
     });
 
-    bus.addListener(()=>{
+    bus.addListener(()=> {
         throw new Error('nope!');
     });
 
-    bus.addListener(()=>{
+    bus.addListener(()=> {
+        // this one will never be invoked
         t.pass();
     });
 
-    t.throws(()=>{
+    t.throws(()=> {
         bus.sendMessage();
+    }, Error);
+});
+
+test('a bus should only accept the pre-defined accepted messages, if any are passed in', (t)=> {
+    const bus = getBus(['PROVIDER_UPDATED', 'USER_CLICKED_SOMETHING']);
+    t.plan(3);
+
+    bus.addListener(()=> {
+        t.pass();
     });
+
+    bus.sendMessage('PROVIDER_UPDATED', 'Fabulous message');
+    bus.sendMessage('USER_CLICKED_SOMETHING', {});
+
+    t.throws(()=> {
+        bus.sendMessage('NOT_AN_ACCEPTED_MESSAGE');
+    });
+});
+
+test('a bus with no specified accepted messages should accept any message', (t)=> {
+    const bus = getBus();
+    t.plan(2);
+
+    bus.addListener(()=> {
+        t.pass();
+    });
+
+    bus.sendMessage('any', 'Fabulous message');
+    bus.sendMessage('MESSAGE', {});
+});
+
+test('a listener might accept to be invoked only when a particular message is sent to the bus', (t)=> {
+    const bus = getBus();
+    t.plan(5);
+
+    bus.addListener('INVOKE_ME_ONLY_FOR_THIS_MESSAGE', ()=> {
+        // invoked twice
+        t.pass();
+    });
+
+    bus.addListener(()=> {
+        // invoked 3 times
+        t.pass();
+    });
+
+    bus.sendMessage('INVOKE_ME_ONLY_FOR_THIS_MESSAGE');
+    bus.sendMessage('another-one');
+    bus.sendMessage('INVOKE_ME_ONLY_FOR_THIS_MESSAGE');
 });
