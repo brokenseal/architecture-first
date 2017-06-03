@@ -214,3 +214,8 @@ test('a listener might accept to be invoked only when a particular message is se
     bus.sendMessage('another-one');
     bus.sendMessage('INVOKE_ME_ONLY_FOR_THIS_MESSAGE');
 });
+
+test('getAcceptedMessages should return an empty list if no accepted messages have been passed', (t)=>{
+    const bus = getBus();
+    t.deepEqual([], bus.getAcceptedMessages());
+});

@@ -18,4 +18,7 @@ test('presentation bus should only accept presentation messages', (t)=>{
     const acceptedMessages = app.comms.presentation.getAcceptedMessages();
 
     t.deepEqual(acceptedMessages, ['STATE_UPDATED']);
+    t.throws(()=>{
+        app.comms.presentation.sendMessage('NOT_ACCEPTED');
+    });
 });

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/.bin/gulp start",
-    "test": "ava"
+    "test": "ava",
+    "test-with-coverage": "nyc ava"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "dependencies": {
     "ava": "^0.19.1",
     "gulp": "^3.9.1",
+    "nyc": "^11.0.2",
     "preact": "^8.1.0",
     "redux": "^3.6.0"
   },
@@ -39,6 +41,9 @@
     "babel": "inherit"
   },
   "babel": {
-    "presets": ["@ava/stage-4"]
+    "presets": [
+      "@ava/stage-4"
+    ],
+    "sourceMaps": "inline"
   }
 }
