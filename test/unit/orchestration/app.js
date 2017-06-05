@@ -1,6 +1,5 @@
 import test from 'ava';
-import {getApp} from '../../../src/app/app'
-import {getAppBuses} from '../../../src/orchestration/index'
+import {getApp, getAppBuses} from '../../../src/orchestration/app'
 
 
 test('getApp should return an instance of our app with communication buses', (t)=>{

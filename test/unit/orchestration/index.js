@@ -1,5 +1,5 @@
 import test from 'ava';
-import {getAppBuses} from '../../../src/orchestration/index'
+import {getAppBuses} from '../../../src/orchestration/app'
 import {getBus} from '../../../src/orchestration/bus'
 
 
