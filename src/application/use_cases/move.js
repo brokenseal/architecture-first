@@ -16,3 +16,33 @@ export const move = (player, squares, position)=>{
 
     return newSquares;
 };
+
+export const calculateWinner = (squares)=>{
+    const victories = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+
+        [0, 4, 8],
+        [2, 4, 6],
+
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8]
+    ];
+
+    for(let i = 0; i < victories.length; i++){
+        let victory = victories[i];
+        let row = squares[victory[0]] + squares[victory[1]] + squares[victory[2]];
+
+        if(row === 'XXX'){
+            return 'X';
+        }
+
+        if(row === 'OOO'){
+            return 'O';
+        }
+    }
+
+    return null;
+};
