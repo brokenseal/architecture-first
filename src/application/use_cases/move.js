@@ -44,5 +44,10 @@ export const calculateWinner = (squares)=>{
         }
     }
 
+    const isDraw = squares.reduce((acc, curr)=>{ return !!acc && !!curr}, true);
+    if(isDraw){
+        return 'Draw';
+    }
+
     return null;
 };

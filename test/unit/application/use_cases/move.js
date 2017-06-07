@@ -145,3 +145,14 @@ test('if a move happened, calculate the winner and return it (test all possible 
 
     t.is(winner, x);
 });
+
+
+test('if a move happened, calculate if there is a draw scenario', (t)=>{
+    let winner = calculateWinner([
+        x,      o,      x,
+        o,      x,      o,
+        o,      x,      o
+    ]);
+
+    t.is(winner, 'Draw');
+});

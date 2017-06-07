@@ -20,7 +20,9 @@
   "homepage": "https://github.com/brokenseal/architecture-first#readme",
   "dependencies": {
     "ava": "^0.19.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "gulp": "^3.9.1",
+    "jsdom": "^11.0.0",
     "nyc": "^11.0.2",
     "preact": "^8.1.0",
     "redux": "^3.6.0"
@@ -41,6 +43,14 @@
     "babel": "inherit"
   },
   "babel": {
+    "plugins": [
+      [
+        "transform-react-jsx",
+        {
+          "pragma": "preact.h"
+        }
+      ]
+    ],
     "presets": [
       "@ava/stage-4"
     ],

@@ -3,13 +3,13 @@ import {getBus} from './bus'
 
 export const getApp = ()=>{
     return {
-        comms: getAppBuses()
+        buses: getAppBuses()
     }
 };
 
 export const getAppBuses = ()=> {
     return {
-        presentation: getBus(['STATE_UPDATED']),
+        presentation: getBus(['STATE_UPDATED', 'USER_CLICKED']),
         networking: getBus(),
         data: getBus()
     }
