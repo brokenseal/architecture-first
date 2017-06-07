@@ -28,7 +28,8 @@
     "redux": "^3.6.0"
   },
   "devDependencies": {
-    "ava": "^0.19.1"
+    "ava": "^0.19.1",
+    "webpack": "^2.6.1"
   },
   "ava": {
     "files": [
