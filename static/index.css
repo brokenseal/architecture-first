@@ -1,0 +1,16 @@
+.cell {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 30px;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+.cell:nth-child(1), .cell:nth-child(2) {
+    border-right-color: black;
+}
+
+.row:nth-child(1) .cell, .row:nth-child(2) .cell {
+    border-bottom-color: black;
+}

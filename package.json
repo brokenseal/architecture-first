@@ -4,9 +4,10 @@
   "description": "A first attempt to find the best architecture layout for a frontend application",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/gulp start",
+    "start": "./node_modules/.bin/webpack-dev-server --config build/webpack.config.js --open",
     "test": "ava",
-    "test-with-coverage": "nyc ava"
+    "test-with-coverage": "nyc ava",
+    "bundle": "./node_modules/.bin/webpack --config build/webpack.config.js  --progress --watch"
   },
   "repository": {
     "type": "git",
@@ -23,17 +24,21 @@
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "gulp": "^3.9.1",
     "jsdom": "^11.0.0",
+    "lodash": "^4.17.4",
     "nyc": "^11.0.2",
     "preact": "^8.1.0",
+    "css-loader": "^0.28.4",
+    "style-loader": "^0.18.2",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5",
     "redux": "^3.6.0"
   },
   "devDependencies": {
-    "ava": "^0.19.1",
-    "webpack": "^2.6.1"
   },
   "ava": {
     "files": [
-      "test/**/*.{js,jsx}"
+      "test/**/*.{js,jsx}",
+      "!test/**/utils.js"
     ],
     "source": [
       "src/**/*.{js,jsx}"

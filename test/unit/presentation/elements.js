@@ -4,27 +4,21 @@ import preact from 'preact';
 import {Game} from '../../../src/presentation/elements'
 import {getApp} from '../../../src/orchestration/app'
 import {getBus} from '../../../src/orchestration/bus'
+import {before, after, click} from './utils'
 
 
 const x = 'X';
 const o = 'O';
+let dom;
 
-test.before(()=> {
-    // from a preact point of view, it doesn't matter if it accesses the same DOM tree that we use in our tests or a
-    // different one
-    let dom = new JSDOM(`<html><body></body></html>`);
-    global.document = dom.window.document;
-});
+test.before(before);
+test.after(after);
 
-test.after(()=> {
-    // FIXME: this might interfere with other, asynchronous tests that need this global document tree, we need to keep
-    // an eye out for other tests that might result in failures that show that "document" is not defined
-    global.document = undefined;
+test.beforeEach(()=>{
+    dom = new JSDOM(`<html><body></body></html>`);
 });
 
 test('Game element should render the correct shallow structure', (t)=> {
-    const dom = new JSDOM(`<html><body></body></html>`);
-
     const result = preact.render((
         <div>
             <Game squares={[]} bus={getBus()}/>
@@ -38,8 +32,6 @@ test('Game element should render the correct shallow structure', (t)=> {
 });
 
 test('Game element should, given some squares, render the correct board game structure', (t)=> {
-    const dom = new JSDOM(`<html><body></body></html>`);
-
     const check = (squares, expect)=>{
         const result = preact.render((
             <div>
@@ -48,7 +40,6 @@ test('Game element should, given some squares, render the correct board game str
         ), dom.window.document.body);
 
         const boardGame = result.querySelector('#board-game');
-        t.true(boardGame.children.length === 9);
         t.true(boardGame.querySelectorAll('.cell').length === 9);
 
         const res = [...boardGame.querySelectorAll('.cell').values()].map((cell)=>{
@@ -80,9 +71,22 @@ test('Game element should, given some squares, render the correct board game str
     ]);
 });
 
+test('Game element should render rows correctly', (t)=>{
+    const squares = new Array(9).fill(null);
+
+    const gameBoard = preact.render((
+        <div>
+            <Game squares={squares} bus={getBus()}/>
+        </div>
+    ), dom.window.document.body);
+
+    const rows = [...gameBoard.querySelectorAll('.row').values()];
+    t.is(rows.length, 3);
+});
+
+
 test('Game should notify the given presentation bus when a user clicks on a cell', (t)=>{
     const app = getApp();
-    const dom = new JSDOM(`<html><body></body></html>`);
     const squares = new Array(9).fill(null);
 
     const result = preact.render((
@@ -92,27 +96,23 @@ test('Game should notify the given presentation bus when a user clicks on a cell
     ), dom.window.document.body);
 
     let cell = [...result.querySelectorAll('.cell')][0];
-    let subscriptionToken = app.buses.presentation.addListener('USER_CLICKED', (_, payload)=>{
+    let subscriptionToken = app.buses.presentation.addListener('CELL_CLICKED', (_, payload)=>{
         subscriptionToken.unsubscribe();
-        t.true(payload === cell);
+        t.true(payload === 0);
     });
 
-    var evt = dom.window.document.createEvent("HTMLEvents");
-    evt.initEvent("click", false, true);
+    click(cell);
 
-    cell.dispatchEvent(evt);
-
-    subscriptionToken = app.buses.presentation.addListener('USER_CLICKED', (_, payload)=>{
+    subscriptionToken = app.buses.presentation.addListener('CELL_CLICKED', (_, payload)=>{
         subscriptionToken.unsubscribe();
-        t.true(payload === cell);
+        t.true(payload === 4);
     });
     cell = [...result.querySelectorAll('.cell')][4];
-    cell.dispatchEvent(evt);
+    click(cell);
 });
 
 test.cb('Game should update its state when the app state updates, using the bus as the communication input', (t)=>{
     const app = getApp();
-    const dom = new JSDOM(`<html><body></body></html>`);
     const squares = new Array(9).fill(null);
 
     const result = preact.render((
@@ -142,4 +142,7 @@ test.cb('Game should update its state when the app state updates, using the bus 
         t.end();
     }, 0);
 });
-0
+
+test.skip('Game should unmount', (t)=>{
+    // TODO
+});

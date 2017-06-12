@@ -4,7 +4,7 @@ import {getBus} from '../../../src/orchestration/bus'
 
 test('getBus without any configuration returns a new bus instance', t => {
     const bus = getBus();
-    const expectedOwnProperties = ['sendMessage', 'addListener', 'getListeners', 'getAcceptedMessages'];
+    const expectedOwnProperties = ['sendMessage', 'addListener', 'getListeners', 'getAcceptedMessages', 'once'];
     t.plan(expectedOwnProperties.length);
 
     Object.keys(bus).forEach((prop)=> {
@@ -169,7 +169,7 @@ test('by design, if a listener throws an error, the whole process fails', (t)=> 
 });
 
 test('a bus should only accept the pre-defined accepted messages, if any are passed in', (t)=> {
-    const bus = getBus(['PROVIDER_UPDATED', 'USER_CLICKED_SOMETHING']);
+    const bus = getBus(['PROVIDER_UPDATED', 'CELL_CLICKED_SOMETHING']);
     t.plan(3);
 
     bus.addListener(()=> {
@@ -177,7 +177,7 @@ test('a bus should only accept the pre-defined accepted messages, if any are pas
     });
 
     bus.sendMessage('PROVIDER_UPDATED', 'Fabulous message');
-    bus.sendMessage('USER_CLICKED_SOMETHING', {});
+    bus.sendMessage('CELL_CLICKED_SOMETHING', {});
 
     t.throws(()=> {
         bus.sendMessage('NOT_AN_ACCEPTED_MESSAGE');
@@ -218,4 +218,17 @@ test('a listener might accept to be invoked only when a particular message is se
 test('getAcceptedMessages should return an empty list if no accepted messages have been passed', (t)=>{
     const bus = getBus();
     t.deepEqual([], bus.getAcceptedMessages());
+});
+
+test('once should run the passed listener, correctly, only once', (t)=>{
+    const bus = getBus();
+    const payload = {};
+    t.plan(1);
+
+    bus.once('ONCE_1', (_, internalPayload)=>{
+        t.true(internalPayload === payload);
+    });
+
+    bus.sendMessage('ONCE_1', payload);
+    bus.sendMessage('ONCE_1', payload);
 });

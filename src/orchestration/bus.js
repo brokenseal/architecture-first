@@ -3,7 +3,7 @@ export const getBus = (acceptedMessages = null) => {
     const internalAcceptedMessages = acceptedMessages === null ? null : [...acceptedMessages];
 
     return {
-        sendMessage: (message, payload)=> {
+        sendMessage: function (message, payload) {
             if (internalAcceptedMessages !== null && internalAcceptedMessages.indexOf(message) === -1) {
                 throw new Error(`Message "${message}" not part of the accepted messages for this bus.`);
             }
@@ -17,7 +17,14 @@ export const getBus = (acceptedMessages = null) => {
                 listener(message, payload);
             });
         },
-        addListener: (listenerOrMessage, listener = null)=> {
+        once: function (message, listener) {
+            const subscription = this.addListener(message, function () {
+                subscription.unsubscribe();
+                return listener.apply(null, arguments);
+            });
+            return subscription;
+        },
+        addListener: function (listenerOrMessage, listener = null) {
             let messageAcceptedByThisListener = null;
 
             if (listener === null) {
@@ -46,10 +53,10 @@ export const getBus = (acceptedMessages = null) => {
                 }
             }
         },
-        getListeners: ()=> {
+        getListeners: function () {
             return [...listeners];
         },
-        getAcceptedMessages: ()=> {
+        getAcceptedMessages: function () {
             if (internalAcceptedMessages === null) {
                 return [];
             }
