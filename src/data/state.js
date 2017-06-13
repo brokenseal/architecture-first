@@ -1,5 +1,6 @@
 import {cloneDeep} from 'lodash';
 import {createStore} from 'redux'
+import {calculateWinner, move} from "../application/use_cases/move";
 
 
 export const getStateManager = (defaultState)=> {
@@ -29,15 +30,20 @@ export const getStateManager = (defaultState)=> {
 const getMainReducer = defaultState => (state = defaultState, action)=> {
     switch (action.type) {
         case 'MOVE':
-            return {
-                ...state,
-                squares: state.squares.map((value, index)=>{
-                    if(index === action.payload){
-                        return 'X';
-                    }
-                    return value;
-                })
-            };
+            if(state.winner !== null){
+                return state;
+            }
+
+            const newSquares = move(state.currentPlayer, state.squares, action.payload);
+            if(newSquares === state.squares){
+                return state;
+            }
+
+            return Object.assign({}, state, {
+                currentPlayer: state.currentPlayer === 'X' ? 'O' : 'X',
+                winner: calculateWinner(newSquares) || null,
+                squares: newSquares
+            });
         default:
             return state;
     }

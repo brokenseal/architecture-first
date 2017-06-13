@@ -35,12 +35,13 @@ test('bootstrap should setup correctly the hooks for the game to happen correctl
 test.cb('bootstrap should setup correctly the hooks for the game to happen correctly: CELL_CLICKED', (t)=> {
     const dom = new JSDOM(`<html><body></body></html>`);
     const [boardGame, app] = bootstrap(dom.window.document.body);
-    const indexes = [0, 4, 7];
+    const indexes = [0, 4, 7, 5];
     t.plan(indexes.length * 2);
     const cells = [];
 
     indexes.forEach((cellIndex)=> {
         const cell = boardGame.querySelectorAll('.cell')[cellIndex];
+
         app.buses.presentation.once('CELL_CLICKED', (_, payload)=> {
             t.true(cellIndex === payload);
 
@@ -48,8 +49,14 @@ test.cb('bootstrap should setup correctly the hooks for the game to happen corre
                 cells.push(boardGame.querySelectorAll('.cell')[cellIndex]);
 
                 if (cells.length === indexes.length) {
-                    cells.forEach((cell)=> {
-                        t.true(cell.innerHTML === "X");
+                    cells.forEach((cell, index)=> {
+                        let player = 'X';
+
+                        if (index % 2) {
+                            player = 'O';
+                        }
+
+                        t.true(cell.innerHTML === player);
                     });
                     t.end();
                 }
