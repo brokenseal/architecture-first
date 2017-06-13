@@ -6,6 +6,7 @@
     display: table-cell;
     vertical-align: middle;
     text-align: center;
+    cursor: pointer;
 }
 
 .cell:nth-child(1), .cell:nth-child(2) {

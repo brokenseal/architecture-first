@@ -31,8 +31,7 @@ export class Game extends preact.Component {
     }
 
     render(_, {squares}) {
-        return <div id="container">
-            <div id="board-game">
+        return <div class="board-game">
                 <div class="row">
                     <Cell value={squares[0]} onClick={this.onCellClick.bind(this, 0)}/>
                     <Cell value={squares[1]} onClick={this.onCellClick.bind(this, 1)}/>
@@ -48,8 +47,33 @@ export class Game extends preact.Component {
                     <Cell value={squares[7]} onClick={this.onCellClick.bind(this, 7)}/>
                     <Cell value={squares[8]} onClick={this.onCellClick.bind(this, 8)}/>
                 </div>
-            </div>
-            <div id="history-management"></div>
-        </div>;
+            </div>;
+    }
+}
+
+export class ScoreBoard extends preact.Component {
+    constructor() {
+        super(...arguments);
+
+        this.state = {winner: this.props.winner};
+        this.subscription = null;
+    }
+
+    componentDidMount() {
+        this.subscription = this.props.bus.addListener('STATE_UPDATED', (_, state)=> {
+            this.setState({winner: state.winner});
+        });
+    }
+
+    componentWillUnmount() {
+        if (this.subscription !== null) {
+            this.subscription.unsubscribe();
+        }
+    }
+
+    render(_, {winner}) {
+        return <div class="score-board">
+            And the winner is: {winner}
+        </div>
     }
 }

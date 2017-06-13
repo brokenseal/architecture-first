@@ -1,7 +1,7 @@
 import {test} from 'ava'
 import {JSDOM} from 'jsdom'
 import preact from 'preact';
-import {Game} from '../../../src/presentation/elements'
+import {Game, ScoreBoard} from '../../../src/presentation/elements'
 import {getApp} from '../../../src/orchestration/app'
 import {getBus} from '../../../src/orchestration/bus'
 import {before, after, click} from './utils'
@@ -24,11 +24,11 @@ test('Game element should render the correct shallow structure', (t)=> {
             <Game squares={[]} bus={getBus()}/>
         </div>
     ), dom.window.document.body);
-    const container = result.querySelector('#container');
+    const container = result.querySelector('.board-game');
 
-    t.true(container.children.length === 2);
-    t.true(container.children[0].id === "board-game");
-    t.true(container.children[1].id === "history-management");
+    t.true(container.children.length === 3);
+    t.true(container.querySelectorAll('.cell').length === 9);
+    t.true(container.querySelectorAll('.row').length === 3);
 });
 
 test('Game element should, given some squares, render the correct board game structure', (t)=> {
@@ -39,7 +39,7 @@ test('Game element should, given some squares, render the correct board game str
             </div>
         ), dom.window.document.body);
 
-        const boardGame = result.querySelector('#board-game');
+        const boardGame = result.querySelector('.board-game');
         t.true(boardGame.querySelectorAll('.cell').length === 9);
 
         const res = [...boardGame.querySelectorAll('.cell').values()].map((cell)=>{
@@ -145,4 +145,22 @@ test.cb('Game should update its state when the app state updates, using the bus 
 
 test.skip('Game should unmount', (t)=>{
     // TODO
+});
+
+test('ScoreBoard should display current winner', (t)=>{
+    const app = getApp();
+    const scoreBoard = preact.render(<ScoreBoard winner={app.getCurrentState().winner} bus={app.buses.presentation}/>);
+    t.true(scoreBoard.innerHTML.indexOf('X') === -1);
+});
+
+test.cb('ScoreBoard should update current winner', (t)=>{
+    const app = getApp();
+    const scoreBoard = preact.render(<ScoreBoard winner={app.getCurrentState().winner} bus={app.buses.presentation}/>);
+
+    app.buses.presentation.sendMessage('STATE_UPDATED', {winner: 'X'});
+
+    setTimeout(()=>{
+        t.true(scoreBoard.innerHTML.indexOf('X') >= 0);
+        t.end();
+    }, 0);
 });

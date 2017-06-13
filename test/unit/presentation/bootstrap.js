@@ -11,7 +11,7 @@ test('bootstrap should accept a root element to which append the game and return
     const dom = new JSDOM(`<html><body></body></html>`);
     const [boardGame, _] = bootstrap(dom.window.document.body);
 
-    t.true(boardGame.innerHTML === "<div id=\"container\"><div id=\"board-game\"><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div></div><div id=\"history-management\"></div></div>");
+    t.true(boardGame.innerHTML === "<div class=\"board-game\"><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div></div><div class=\"score-board\">And the winner is: </div>");
 });
 
 test('bootstrap should setup correctly the hooks for the game to happen correctly: CELL_CLICKED', (t)=> {
@@ -29,6 +29,7 @@ test('bootstrap should setup correctly the hooks for the game to happen correctl
         t.true(cellIndex === payload);
 
     });
+
     click(cell);
 });
 
