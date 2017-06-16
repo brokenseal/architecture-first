@@ -1,15 +1,11 @@
 import test from 'ava';
-import {getAppBuses} from '../../../src/orchestration/app'
+import {getAppBus} from '../../../src/orchestration/app'
 import {getBus} from '../../../src/orchestration/bus'
 
 
-test('getAppBuses should return the list of buses used in the app', (t)=>{
-    const buses = getAppBuses();
+test('getAppBus should return the list of buses used in the app', (t)=>{
+    const appBus = getAppBus();
     const bus = getBus();
 
-    t.true('presentation' in buses);
-    t.true('networking' in buses);
-    t.true('data' in buses);
-
-    t.deepEqual(Object.keys(bus), Object.keys(buses.presentation));
+    t.deepEqual(Object.keys(bus), Object.keys(appBus));
 });

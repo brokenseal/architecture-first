@@ -1,23 +1,20 @@
 import test from 'ava';
-import {getApp, getAppBuses} from '../../../src/orchestration/app'
+import {getApp, getAppBus} from '../../../src/orchestration/app'
 
 
 test('getApp should return an instance of our app with communication buses', (t)=>{
     const app = getApp();
-    const buses = getAppBuses();
+    const bus = getAppBus();
 
-    t.true('buses' in app);
-    t.deepEqual(Object.keys(app.buses.presentation), Object.keys(buses.presentation));
-    t.deepEqual(Object.keys(app.buses.data), Object.keys(buses.data));
-    t.deepEqual(Object.keys(app.buses.networking), Object.keys(buses.networking));
+    t.deepEqual(Object.keys(app.bus), Object.keys(bus));
 });
 
 test('presentation bus should only accept presentation messages', (t)=>{
     const app = getApp();
-    const acceptedMessages = app.buses.presentation.getAcceptedMessages();
+    const acceptedMessages = app.bus.getAcceptedMessages();
 
-    t.deepEqual(acceptedMessages, ['STATE_UPDATED', 'CELL_CLICKED', 'GO_BACK_IN_TIME', 'GO_FORWARD_IN_TIME']);
+    t.deepEqual(acceptedMessages, ['STATE_UPDATED', 'CELL_CLICKED', 'GO_BACK_IN_TIME', 'GO_FORWARD_IN_TIME', 'MOVE']);
     t.throws(()=>{
-        app.buses.presentation.sendMessage('NOT_ACCEPTED');
+        app.bus.sendMessage('NOT_ACCEPTED');
     });
 });

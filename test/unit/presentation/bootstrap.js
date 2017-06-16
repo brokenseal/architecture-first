@@ -23,10 +23,10 @@ test('bootstrap should setup correctly the hooks for the game to happen correctl
 
     t.plan(2);
 
-    app.buses.presentation.once('STATE_UPDATED', (_, newState)=> {
+    app.bus.once('STATE_UPDATED', (_, newState)=> {
         t.true(newState.squares[cellIndex] === 'X');
     });
-    app.buses.presentation.once('CELL_CLICKED', (_, payload)=> {
+    app.bus.once('CELL_CLICKED', (_, payload)=> {
         t.true(cellIndex === payload);
 
     });
@@ -44,7 +44,7 @@ test.cb('bootstrap should setup correctly the hooks for the game to happen corre
     indexes.forEach((cellIndex)=> {
         const cell = boardGame.querySelectorAll('.cell')[cellIndex];
 
-        app.buses.presentation.once('CELL_CLICKED', (_, payload)=> {
+        app.bus.once('CELL_CLICKED', (_, payload)=> {
             t.true(cellIndex === payload);
 
             setTimeout(()=> {
