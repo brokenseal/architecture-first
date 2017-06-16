@@ -1,5 +1,5 @@
 import preact from 'preact'
-import {Game, ScoreBoard} from './elements'
+import {Game, ScoreBoard, StateHistoryManager} from './elements'
 import {getApp} from '../orchestration/app'
 
 
@@ -10,6 +10,7 @@ export const bootstrap = (root)=> {
         <div>
             <Game squares={app.getCurrentState().squares} bus={app.buses.presentation}/>
             <ScoreBoard winner={app.getCurrentState().winner} bus={app.buses.presentation}/>
+            <StateHistoryManager initialState={app.getCurrentState()} bus={app.buses.presentation}/>
         </div>
     ), root);
 

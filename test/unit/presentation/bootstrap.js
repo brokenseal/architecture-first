@@ -7,11 +7,12 @@ import {JSDOM} from 'jsdom';
 test.before(before);
 test.after(after);
 
+
 test('bootstrap should accept a root element to which append the game and return the correct result', (t)=> {
     const dom = new JSDOM(`<html><body></body></html>`);
     const [boardGame, _] = bootstrap(dom.window.document.body);
 
-    t.true(boardGame.innerHTML === "<div class=\"board-game\"><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div></div><div class=\"score-board\">And the winner is: </div>");
+    t.true(boardGame.innerHTML === "<div class=\"board-game\"><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div><div class=\"row\"><div class=\"cell\"></div><div class=\"cell\"></div><div class=\"cell\"></div></div></div><div class=\"score-board\">And the winner is: </div><div class=\"state-history-manager\"><button class=\"back\">Back</button><button class=\"forward\">Forward</button><div class=\" current\">0</div></div>");
 });
 
 test('bootstrap should setup correctly the hooks for the game to happen correctly: CELL_CLICKED', (t)=> {
@@ -66,4 +67,52 @@ test.cb('bootstrap should setup correctly the hooks for the game to happen corre
 
         click(cell);
     });
+});
+
+test.cb('bootstrap should setup correctly the hooks for the state history manager to work ' +
+    'correctly: GO_BACK_IN_TIME', (t)=> {
+    const dom = new JSDOM(`<html><body></body></html>`);
+    const [boardGame, app] = bootstrap(dom.window.document.body);
+    const back = boardGame.querySelector('.back');
+
+    click(boardGame.querySelectorAll('.cell')[0]);
+    click(boardGame.querySelectorAll('.cell')[1]);
+    click(boardGame.querySelectorAll('.cell')[2]);
+    click(boardGame.querySelectorAll('.cell')[3]);
+    click(back);
+    click(back);
+
+    setTimeout(()=> {
+        t.deepEqual(app.getCurrentState().squares, [
+            'X', 'O', null,
+            null, null, null,
+            null, null, null
+        ]);
+        t.end();
+    }, 0);
+});
+
+test.cb('bootstrap should setup correctly the hooks for the state history manager to work ' +
+    'correctly: GO_FORWARD_IN_TIME', (t)=> {
+    const dom = new JSDOM(`<html><body></body></html>`);
+    const [boardGame, app] = bootstrap(dom.window.document.body);
+    const back = boardGame.querySelector('.back');
+    const forward = boardGame.querySelector('.forward');
+
+    click(boardGame.querySelectorAll('.cell')[0]);
+    click(boardGame.querySelectorAll('.cell')[1]);
+    click(boardGame.querySelectorAll('.cell')[2]);
+    click(boardGame.querySelectorAll('.cell')[3]);
+    click(back);
+    click(back);
+    click(forward);
+
+    setTimeout(()=> {
+        t.deepEqual(app.getCurrentState().squares, [
+            'X', 'O', 'X',
+            null, null, null,
+            null, null, null
+        ]);
+        t.end();
+    }, 0);
 });

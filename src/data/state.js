@@ -44,6 +44,8 @@ const getMainReducer = defaultState => (state = defaultState, action)=> {
                 winner: calculateWinner(newSquares) || null,
                 squares: newSquares
             });
+        case 'GO_BACK_IN_TIME': return action.payload;
+        case 'GO_FORWARD_IN_TIME': return action.payload;
         default:
             return state;
     }

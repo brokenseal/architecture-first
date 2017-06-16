@@ -22,3 +22,7 @@
 .row {
     display: table-row;
 }
+
+.current {
+    background-color: lightgoldenrodyellow;
+}

@@ -16,7 +16,7 @@ test('presentation bus should only accept presentation messages', (t)=>{
     const app = getApp();
     const acceptedMessages = app.buses.presentation.getAcceptedMessages();
 
-    t.deepEqual(acceptedMessages, ['STATE_UPDATED', 'CELL_CLICKED']);
+    t.deepEqual(acceptedMessages, ['STATE_UPDATED', 'CELL_CLICKED', 'GO_BACK_IN_TIME', 'GO_FORWARD_IN_TIME']);
     t.throws(()=>{
         app.buses.presentation.sendMessage('NOT_ACCEPTED');
     });

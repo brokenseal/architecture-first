@@ -1,10 +1,10 @@
 import {test} from 'ava'
 import {JSDOM} from 'jsdom'
 import preact from 'preact';
-import {Game, ScoreBoard} from '../../../src/presentation/elements'
-import {getApp} from '../../../src/orchestration/app'
-import {getBus} from '../../../src/orchestration/bus'
-import {before, after, click} from './utils'
+import {Game, ScoreBoard} from '../../../../src/presentation/elements'
+import {getApp} from '../../../../src/orchestration/app'
+import {getBus} from '../../../../src/orchestration/bus'
+import {before, after, click} from '../utils'
 
 
 const x = 'X';

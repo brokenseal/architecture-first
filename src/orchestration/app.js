@@ -22,7 +22,7 @@ export const getApp = ()=> {
 
 export const getAppBuses = ()=> {
     return {
-        presentation: getBus(['STATE_UPDATED', 'CELL_CLICKED']),
+        presentation: getBus(['STATE_UPDATED', 'CELL_CLICKED', 'GO_BACK_IN_TIME', 'GO_FORWARD_IN_TIME']),
         networking: getBus(),
         data: getBus(['MOVE', 'STATE_UPDATED'])
     }
@@ -43,5 +43,11 @@ const setupWiring = (app, stateManager)=> {
     });
     app.buses.data.addListener('MOVE', (_, payload)=> {
         stateManager.dispatch('MOVE', payload);
+    });
+    app.buses.presentation.addListener('GO_BACK_IN_TIME', (_, pastState)=>{
+        stateManager.dispatch('GO_BACK_IN_TIME', pastState);
+    });
+    app.buses.presentation.addListener('GO_FORWARD_IN_TIME', (_, pastState)=>{
+        stateManager.dispatch('GO_FORWARD_IN_TIME', pastState);
     });
 };
